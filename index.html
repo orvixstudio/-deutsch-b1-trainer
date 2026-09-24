@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f5f7fb">
+<title>Deutsch B1 – Hören & Lesen</title>
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--text:#172033;--muted:#69748a;--line:#e5e9f1;--blue:#3159df;--green:#159447;--red:#d9363e;--soft:#eef2ff}
+*{box-sizing:border-box}html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+button,input{font:inherit}.app{max-width:760px;margin:auto;min-height:100vh}
+.top{position:sticky;top:0;z-index:20;background:#ffffffee;backdrop-filter:blur(16px);border-bottom:1px solid var(--line);padding:12px 14px;display:flex;align-items:center;gap:10px}
+.top button{width:40px;height:40px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--text);font-size:20px}.brand{font-weight:850;flex:1}.brand small{display:block;color:var(--muted);font-size:11px;font-weight:500;margin-top:2px}
+.wrap{padding:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:12px;box-shadow:0 5px 22px #1720330a}
+.hero{text-align:center;padding:28px 18px}.hero .emoji{font-size:42px}.hero h1{margin:8px 0;font-size:29px}.hero p{color:var(--muted);line-height:1.5}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.btn{border:0;border-radius:13px;padding:14px 15px;background:var(--blue);color:#fff;font-weight:800;width:100%;cursor:pointer}.btn.secondary{background:var(--soft);color:var(--blue)}.btn.gray{background:#eef0f4;color:#39445a}.btn:disabled{opacity:.45}
+.pillrow{display:flex;gap:7px;justify-content:center;flex-wrap:wrap}.pill{background:#f0f3f8;border-radius:999px;padding:7px 10px;color:#556177;font-size:12px;font-weight:800}
+.section{font-weight:850;font-size:16px;margin:18px 2px 9px}.qnum{font-size:12px;color:var(--muted);font-weight:800}.qtext{font-size:18px;font-weight:750;line-height:1.42;margin:7px 0 14px}
+.option{display:flex;align-items:flex-start;gap:10px;border:1px solid var(--line);border-radius:13px;padding:12px;margin:8px 0;cursor:pointer;background:#fff}.option input{margin-top:3px}.option.selected{border-color:#91a6ff;background:#f7f8ff}
+.audio{background:#f0f3f8;border-radius:14px;padding:12px;margin:10px 0 14px}.audio strong{font-size:13px}.audio small{display:block;color:var(--muted);margin:3px 0 8px}.audio audio{width:100%}
+.navrow{display:flex;gap:8px;margin-top:12px}.navrow button{flex:1}.timer{font-weight:850;font-variant-numeric:tabular-nums}.progress{height:6px;background:#e8ebf2;border-radius:99px;overflow:hidden;margin:9px 0 14px}.progress i{display:block;height:100%;background:var(--blue)}
+.answerbox{background:#f8f9fc;border:1px solid var(--line);border-radius:14px;padding:12px;margin-top:10px}.correct{color:var(--green);font-weight:800}.wrong{color:var(--red);font-weight:800}
+.muted{color:var(--muted);font-size:12px;line-height:1.45}.resultBig{text-align:center;font-size:42px;font-weight:900}.bar{height:9px;background:#e8ebf2;border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;background:var(--blue)}
+.partrow{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)}.partrow:last-child{border:0}.textblock{line-height:1.65;font-size:15px}.notice{font-size:11px;color:var(--muted);line-height:1.45}
+.hist{background:#fff;border:1px solid var(--line);border-radius:13px;padding:11px 13px;display:flex;justify-content:space-between;margin-bottom:8px}.tag{font-size:10px;background:#eef2ff;color:var(--blue);padding:4px 7px;border-radius:999px;font-weight:800}
+.textarea{width:100%;min-height:170px;border:1px solid var(--line);border-radius:13px;padding:12px;resize:vertical;background:#fff;color:var(--text)}
+.choice-title{font-size:13px;color:var(--muted);font-weight:800;margin-bottom:7px}.danger{color:var(--red)!important;background:#fff0f1!important}
+.error{padding:20px}.error pre{white-space:pre-wrap;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px;font-size:12px}
+@media(max-width:600px){.grid{grid-template-columns:1fr}.wrap{padding:11px}.qtext{font-size:17px}}
+</style>
+</head>
+<body>
+<div id="app" class="app"></div>
+<script>
+"use strict";
+
+const AUDIO={
+  1:"https://bfu.goethe.de/medien/b1_m/audio1.mp4",
+  2:"https://bfu.goethe.de/medien/b1_m/audio2.mp4",
+  3:"https://bfu.goethe.de/medien/b1_m/audio3.mp4",
+  4:"https://bfu.goethe.de/medien/b1_m/audio4.mp4",
+  5:"https://bfu.goethe.de/medien/b1_m/audio5.mp4",
+  6:"https://bfu.goethe.de/medien/b1_m/audio6.mp4",
+  7:"https://bfu.goethe.de/medien/b1_m/audio7.mp4",
+  8:"https://bfu.goethe.de/medien/b1_m/audio8.mp4"
+};
+
+const H=[
+["Teil 1 · Text 1",1,"Frau Stein bekommt einen anderen Termin als ursprünglich geplant.",[["Richtig","richtig"],["Falsch","falsch"]],"richtig"],
+["Teil 1 · Text 1",1,"Was soll Frau Stein nach dem Gespräch tun?",[["die Chipkarte mitbringen","a"],["zehn Euro bezahlen","b"],["noch einmal anrufen","c"]],"c"],
+["Teil 1 · Text 2",2,"Herr Thomas spricht Frau Brahms wegen eines neuen Versicherungstarifs an.",[["Richtig","richtig"],["Falsch","falsch"]],"falsch"],
+["Teil 1 · Text 2",2,"Welche Unterlagen möchte Herr Thomas von Frau Brahms?",[["die Chipkarte","a"],["Zeugnisse","b"],["einen neuen Vertrag","c"]],"b"],
+["Teil 1 · Text 3",3,"Die Radiosendung informiert über Veranstaltungen in München.",[["Richtig","richtig"],["Falsch","falsch"]],"falsch"],
+["Teil 1 · Text 3",3,"Warum stockt der Verkehr auf der Autobahn?",[["wegen einer Baustelle","a"],["wegen des Berufsverkehrs","b"],["wegen eines Unfalls","c"]],"c"],
+["Teil 1 · Text 4",4,"Die Durchsage richtet sich an Menschen, die gemeinsam unterwegs sind.",[["Richtig","richtig"],["Falsch","falsch"]],"falsch"],
+["Teil 1 · Text 4",4,"Welcher Zug fährt nicht?",[["nach Bern","a"],["nach Genf","b"],["nach Lausanne","c"]],"b"],
+["Teil 1 · Text 5",5,"Im Osten Deutschlands soll sich die Wetterlage verbessern.",[["Richtig","richtig"],["Falsch","falsch"]],"falsch"],
+["Teil 1 · Text 5",5,"Welche Wettererscheinung wird für die Elbe angekündigt?",[["Gewitter","a"],["Temperaturen unter zehn Grad","b"],["starker Regen im Westen","c"]],"a"],
+["Teil 2 · Museum",6,"Wie wirkt das Münchner Stadtmuseum zu Beginn des Rundgangs?",[["sehr voll","a"],["teilweise geschlossen","b"],["eher leer","c"]],"c"],
+["Teil 2 · Museum",6,"Welchen Bereich zeigt der Museumsführer den Besuchern?",[["alle Bereiche","a"],["die Hauptausstellung","b"],["nur Sonderausstellungen","c"]],"b"],
+["Teil 2 · Museum",6,"Wo sollen sich die Teilnehmer später treffen?",[["am Eingang","a"],["bei der Garderobe","b"],["im Café","c"]],"a"],
+["Teil 2 · Museum",6,"Welches Thema steht im Mittelpunkt der Ausstellung?",[["das Oktoberfest","a"],["bayerisches Essen","b"],["die Geschichte Münchens","c"]],"c"],
+["Teil 2 · Museum",6,"Welchen Ort empfiehlt der Führer für einen Besuch?",[["ein Restaurant","a"],["ein Café","b"],["einen Biergarten","c"]],"c"],
+["Teil 3 · Gespräch",7,"Beim Fest wurde der Geburtstag von Annas Mann gefeiert.",[["Richtig","richtig"],["Falsch","falsch"]],"falsch"],
+["Teil 3 · Gespräch",7,"Nadia findet das Haus der Gastgeber besonders schön.",[["Richtig","richtig"],["Falsch","falsch"]],"richtig"],
+["Teil 3 · Gespräch",7,"Nadia hat beruflich mit Fernsehen zu tun.",[["Richtig","richtig"],["Falsch","falsch"]],"falsch"],
+["Teil 3 · Gespräch",7,"Das Essen beim Fest wird von Nadia positiv bewertet.",[["Richtig","richtig"],["Falsch","falsch"]],"richtig"],
+["Teil 3 · Gespräch",7,"Nadia hat gemeinsam mit dem Musiker musiziert.",[["Richtig","richtig"],["Falsch","falsch"]],"falsch"],
+["Teil 3 · Gespräch",7,"Nadia hat auch Jazzmusik gespielt.",[["Richtig","richtig"],["Falsch","falsch"]],"falsch"],
+["Teil 3 · Gespräch",7,"Die Feier endete erst nach Mitternacht.",[["Richtig","richtig"],["Falsch","falsch"]],"richtig"],
+["Teil 4 · Diskussion",8,"Wer vertritt die Aussage, dass kleine Kinder erst später soziales Verhalten lernen?",[["der Moderator","a"],["Dana Schneider","b"],["Florian Bader","c"]],"b"],
+["Teil 4 · Diskussion",8,"Wer meint, dass beruflicher Erfolg ständige Arbeit voraussetzt?",[["der Moderator","a"],["Dana Schneider","b"],["Florian Bader","c"]],"c"],
+["Teil 4 · Diskussion",8,"Wer sagt, dass Beruf und Kinder miteinander vereinbar sind?",[["der Moderator","a"],["Dana Schneider","b"],["Florian Bader","c"]],"c"],
+["Teil 4 · Diskussion",8,"Wer erklärt, dass Kinder in einer Krippe andere Erfahrungen als zu Hause machen?",[["der Moderator","a"],["Dana Schneider","b"],["Florian Bader","c"]],"a"],
+["Teil 4 · Diskussion",8,"Wer spricht davon, dass Erzieherinnen mehrere Kinder gleichzeitig betreuen müssen?",[["der Moderator","a"],["Dana Schneider","b"],["Florian Bader","c"]],"b"],
+["Teil 4 · Diskussion",8,"Wer findet es wichtig, dass Kinder sich auch selbst beschäftigen können?",[["der Moderator","a"],["Dana Schneider","b"],["Florian Bader","c"]],"c"],
+["Teil 4 · Diskussion",8,"Wer erwähnt finanzielle Probleme mancher Kindertagesstätten?",[["der Moderator","a"],["Dana Schneider","b"],["Florian Bader","c"]],"c"],
+["Teil 4 · Diskussion",8,"Wer betont, dass Kinder auch für Familien mit wenig Geld möglich sein sollen?",[["der Moderator","a"],["Dana Schneider","b"],["Florian Bader","c"]],"b"]
+];
+
+const L=[
+{p:1,title:"Alltagsgeschichte",text:"Mara bemerkte am Nachmittag, dass ihr Rucksack fehlte. Sie war am Morgen mit dem Bus zur Arbeit gefahren und hatte ihn später im Büro nicht mehr gesehen. Ein Kollege erinnerte sie daran, dass sie ihn während der Mittagspause im kleinen Café neben dem Büro abgestellt hatte. Dort fand die Besitzerin den Rucksack und bewahrte ihn hinter der Theke auf. Mara war erleichtert, denn ihr Laptop und ihre Unterlagen waren noch vollständig.",qs:[
+["Mara merkte den Verlust erst später am Tag.",[["Richtig","r"],["Falsch","f"]],"r"],
+["Mara war mit dem Zug zur Arbeit gefahren.",[["Richtig","r"],["Falsch","f"]],"f"],
+["Ein Kollege half ihr, sich an das Café zu erinnern.",[["Richtig","r"],["Falsch","f"]],"r"],
+["Der Rucksack wurde im Café gefunden.",[["Richtig","r"],["Falsch","f"]],"r"],
+["Im Rucksack fehlte der Laptop.",[["Richtig","r"],["Falsch","f"]],"f"],
+["Die Besitzerin des Cafés hatte den Rucksack aufgehoben.",[["Richtig","r"],["Falsch","f"]],"r"]
+]},
+{p:2,title:"Nachhaltige Energie",text:"Die kleine Gemeinde Sonnenfeld hat ihre alte Heizungsanlage ersetzt. Auf mehreren öffentlichen Gebäuden wurden Solarmodule installiert. Zusätzlich nutzt die Gemeinde eine Anlage, die aus organischen Resten Wärme erzeugt. Ein Teil der Energie wird selbst verbraucht, überschüssiger Strom wird ins Netz eingespeist. Die Gemeinde möchte damit langfristig Kosten senken und weniger fossile Brennstoffe benötigen. Für die Bewohner wurden außerdem Informationsabende organisiert.",qs:[
+["Was ist das Hauptthema des Textes?",[["ein neues Wohngebiet","a"],["Energieversorgung einer Gemeinde","b"],["ein Schulprojekt","c"]],"b"],
+["Was wurde auf öffentlichen Gebäuden installiert?",[["Solarmodule","a"],["Windräder","b"],["neue Fenster","c"]],"a"],
+["Was passiert mit überschüssigem Strom?",[["Er wird gespeichert und nie verwendet.","a"],["Er wird verkauft an die Nachbargemeinde.","b"],["Er wird ins Stromnetz eingespeist.","c"]],"c"],
+["Welches Ziel verfolgt die Gemeinde?",[["mehr fossile Brennstoffe zu nutzen","a"],["Kosten und fossile Energie zu reduzieren","b"],["die Informationsabende abzuschaffen","c"]],"b"],
+["Für wen gibt es Informationsabende?",[["für Bewohner","a"],["nur für Touristen","b"],["nur für Techniker","c"]],"a"],
+["Die Gemeinde nutzt ausschließlich eine einzige Energiequelle.",[["Richtig","r"],["Falsch","f"]],"f"]
+]},
+{p:3,title:"Anzeige und Informationen",text:"Stadtbibliothek Nord – Neue Öffnungszeiten: Montag bis Freitag 9–19 Uhr, Samstag 10–15 Uhr. Die Rückgabe von Medien ist auch außerhalb der Öffnungszeiten über den Automaten neben dem Haupteingang möglich. Für neue Nutzer gibt es jeden ersten Mittwoch im Monat eine kurze Einführung. Die Teilnahme ist kostenlos, eine Anmeldung ist nicht nötig.",qs:[
+["Wann ist die Bibliothek am Samstag geöffnet?",[["9–12 Uhr","a"],["10–15 Uhr","b"],["12–19 Uhr","c"]],"b"],
+["Wo können Medien außerhalb der Öffnungszeiten zurückgegeben werden?",[["am Haupteingang","a"],["über einen Automaten","b"],["im Lesesaal","c"]],"b"],
+["Wann findet die Einführung statt?",[["jeden ersten Mittwoch","a"],["jeden Montag","b"],["jeden letzten Samstag","c"]],"a"],
+["Was kostet die Einführung?",[["nichts","a"],["fünf Euro","b"],["die normale Jahresgebühr","c"]],"a"],
+["Muss man sich für die Einführung anmelden?",[["Ja, eine Woche vorher.","a"],["Nein.","b"],["Nur telefonisch.","c"]],"b"],
+["Die Rückgabe außerhalb der Öffnungszeiten ist nicht möglich.",[["Richtig","r"],["Falsch","f"]],"f"],
+["Die Bibliothek öffnet unter der Woche um neun Uhr.",[["Richtig","r"],["Falsch","f"]],"r"]
+]},
+{p:4,title:"Meinung",text:"Viele Menschen arbeiten heute teilweise von zu Hause. Für Anna bedeutet das weniger Zeit im Berufsverkehr und mehr Ruhe am Morgen. Sie findet jedoch wichtig, regelmäßig ins Büro zu kommen, weil spontane Gespräche mit Kollegen dort leichter entstehen. Ihr Kollege Daniel arbeitet lieber fast vollständig zu Hause. Er sagt, dass er sich dort besser konzentrieren kann. Beide sind sich einig, dass klare Absprachen im Team notwendig sind.",qs:[
+["Warum gefällt Anna das Arbeiten zu Hause?",[["Sie hat keinen Arbeitsplatz im Büro.","a"],["Sie spart Zeit auf dem Arbeitsweg.","b"],["Sie möchte weniger mit Kollegen sprechen.","c"]],"b"],
+["Was vermisst Anna zu Hause?",[["spontane Gespräche mit Kollegen","a"],["Ruhe am Morgen","b"],["Zeit im Berufsverkehr","c"]],"a"],
+["Warum arbeitet Daniel gern zu Hause?",[["Er kann sich besser konzentrieren.","a"],["Er hat dort mehr Kollegen.","b"],["Er muss keine Aufgaben erledigen.","c"]],"a"],
+["Worüber sind beide einer Meinung?",[["Teams brauchen klare Absprachen.","a"],["Alle sollten im Büro arbeiten.","b"],["Homeoffice ist immer besser.","c"]],"a"],
+["Anna arbeitet ausschließlich von zu Hause.",[["Richtig","r"],["Falsch","f"]],"f"],
+["Daniel bevorzugt einen großen Arbeitsplatz im Büro.",[["Richtig","r"],["Falsch","f"]],"f"],
+["Beide sehen sowohl Vorteile als auch Herausforderungen beim Arbeiten zu Hause.",[["Richtig","r"],["Falsch","f"]],"r"]
+]},
+{p:5,title:"Kurze Mitteilungen",text:"A: Wegen einer technischen Störung beginnt der Kurs heute erst um 18 Uhr. B: Der Termin beim Zahnarzt wurde auf Dienstag um 11 Uhr verschoben. C: Das Paket kann ab morgen in der Filiale am Bahnhof abgeholt werden. D: Der Elternabend findet nicht im Klassenzimmer, sondern in der Aula statt.",qs:[
+["Wann beginnt der Kurs?",[["17 Uhr","a"],["18 Uhr","b"],["19 Uhr","c"]],"b"],
+["Wann ist der neue Zahnarzttermin?",[["Montag 11 Uhr","a"],["Dienstag 11 Uhr","b"],["Dienstag 12 Uhr","c"]],"b"],
+["Wo kann das Paket abgeholt werden?",[["am Bahnhof","a"],["bei der Post zu Hause","b"],["im Kurszentrum","c"]],"a"],
+["Wo findet der Elternabend statt?",[["im Klassenzimmer","a"],["in der Aula","b"],["im Büro","c"]],"b"]
+]}
+];
+
+let state={module:null,mode:"exam",items:[],idx:0,answers:{},start:0,timer:null,part:null};
+const app=document.getElementById("app");
+
+function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));}
+function load(key,fallback){try{const x=localStorage.getItem(key);return x===null?fallback:JSON.parse(x)}catch(e){return fallback}}
+function save(key,value){localStorage.setItem(key,JSON.stringify(value))}
+function getHistory(){return load("b1_history",[])}
+function fmt(sec){return Math.floor(sec/60).toString().padStart(2,"0")+":"+Math.floor(sec%60).toString().padStart(2,"0")}
+function label(v){return ({a:"A",b:"B",c:"C",r:"Richtig",f:"Falsch",richtig:"Richtig",falsch:"Falsch"}[v]||v||"keine Antwort")}
+function top(title,sub){return `<div class="top"><button id="backBtn" aria-label="Zurück">←</button><div class="brand">${esc(title)}<small>${esc(sub||"")}</small></div><button id="homeBtn" aria-label="Startseite">⌂</button></div>`}
+
+function home(){
+  stopTimer();
+  app.innerHTML=`<div class="wrap">
+    <section class="card hero"><div class="emoji">🇩🇪</div><h1>Deutsch B1</h1>
+      <p>Hören & Lesen Trainer – kompakt und direkt im Browser.</p>
+      <div class="pillrow"><span class="pill">🎧 Hören · 30 Aufgaben · 40 Min.</span><span class="pill">📖 Lesen · 30 Aufgaben · 65 Min.</span></div>
+    </section>
+    <div class="grid">
+      <button class="btn" id="goH">🎧 HÖREN</button>
+      <button class="btn secondary" id="goL">📖 LESEN</button>
+    </div>
+    <div class="section">Werkzeuge</div>
+    <div class="grid">
+      <button class="btn secondary" id="trH">🎯 Hören Training</button>
+      <button class="btn secondary" id="trL">🎯 Lesen Training</button>
+      <button class="btn secondary" id="resultsBtn">📊 Ergebnisse</button>
+      <button class="btn secondary" id="notesBtn">📝 Notizen</button>
+    </div>
+    <div class="section">Letztes Ergebnis</div>
+    <div class="card">${lastResult()}</div>
+    <div class="notice">Hören: Audio vom Goethe-Institut. Fragen und Antworten hier sind eigene Formulierungen. Lesen: eigene B1-Texte und Aufgaben im Goethe-orientierten Format.</div>
+  </div>`;
+  document.getElementById("goH").onclick=()=>startH();
+  document.getElementById("goL").onclick=()=>startL();
+  document.getElementById("trH").onclick=()=>training("Hören");
+  document.getElementById("trL").onclick=()=>training("Lesen");
+  document.getElementById("resultsBtn").onclick=results;
+  document.getElementById("notesBtn").onclick=notes;
+}
+function lastResult(){
+  const h=getHistory(); if(!h.length)return `<span class="muted">Noch keine Versuche.</span>`;
+  const x=h[0]; return `<b>${esc(x.module)}</b><br><span class="muted">${x.score}/${x.total} · ${Math.round(x.score/x.total*100)}% · ${new Date(x.date).toLocaleString("de-DE")}</span>`;
+}
+function bindTop(){
+  document.getElementById("backBtn").onclick=home;
+  document.getElementById("homeBtn").onclick=home;
+}
+
+function startH(part=null){
+  const items=part?H.filter(x=>x[0].startsWith("Teil "+part+" ·")):H.slice();
+  state={module:"Hören",mode:part?"training":"exam",items,idx:0,answers:{},start:Date.now(),timer:null,part};
+  run();
+}
+function startL(part=null){
+  let items=[];
+  if(part){
+    const p=L.find(x=>x.p===part);
+    if(p)p.qs.forEach((q,i)=>items.push({p,qi:i,q}));
+  }else{
+    L.forEach(p=>p.qs.forEach((q,i)=>items.push({p,qi:i,q})));
+  }
+  state={module:"Lesen",mode:part?"training":"exam",items,idx:0,answers:{},start:Date.now(),timer:null,part};
+  run();
+}
+function run(){
+  stopTimer();
+  const total=state.module==="Hören"?40*60:65*60;
+  state.start=Date.now();
+  state.timer=setInterval(()=>{
+    const left=Math.max(0,total-Math.floor((Date.now()-state.start)/1000));
+    const el=document.getElementById("timer"); if(el)el.textContent=fmt(left);
+    if(left<=0)finish();
+  },500);
+  renderQuestion();
+}
+function stopTimer(){if(state.timer){clearInterval(state.timer);state.timer=null}}
+
+function renderQuestion(){
+  const it=state.items[state.idx], n=state.idx+1, total=state.items.length;
+  let q="",opts=[],partTitle="",audio="";
+  if(state.module==="Hören"){
+    q=it[2];opts=it[3];partTitle=it[0];
+    audio=`<div class="audio"><strong>🎧 ${esc(partTitle)}</strong><small>Originale Hörsequenz · Goethe-Institut</small><audio controls preload="none" src="${AUDIO[it[1]]}"></audio></div>`;
+  }else{
+    q=it.q[0];opts=it.q[1];partTitle=`Teil ${it.p.p} · ${it.p.title}`;
+  }
+  const chosen=state.answers[n]||"";
+  app.innerHTML=top(state.module,state.mode==="exam"?"Prüfung":"Training")+`<div class="wrap">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;gap:10px"><span class="qnum">Aufgabe ${n} / ${total}</span><span class="timer" id="timer">--:--</span></div>
+      <div class="progress"><i style="width:${n/total*100}%"></i></div>
+      <div class="muted">${esc(partTitle)}</div>
+      ${state.module==="Lesen"?`<div class="textblock"><b>${esc(it.p.title)}</b><p>${esc(it.p.text)}</p></div>`:""}
+      ${audio}
+      <div class="qtext">${esc(q)}</div>
+      <div class="choice-title">Antwort auswählen:</div>
+      <div id="options"></div>
+      <div class="navrow"><button class="btn gray" id="prevBtn" ${n===1?"disabled":""}>← Zurück</button><button class="btn" id="nextBtn">${n===total?"Auswertung":"Weiter →"}</button></div>
+    </div>
+    <div class="notice">${state.module==="Hören"?"Audio: Goethe-Institut. Fragen und Antworten: eigene Formulierungen.":"Lesetext und Aufgaben: eigene Inhalte auf B1-Niveau im Goethe-orientierten Format."}</div>
+  </div>`;
+  bindTop();
+  const box=document.getElementById("options");
+  opts.forEach(o=>{
+    const lab=document.createElement("label");
+    lab.className="option"+(chosen===o[1]?" selected":"");
+    lab.innerHTML=`<input type="radio" name="answer" value="${esc(o[1])}" ${chosen===o[1]?"checked":""}><span>${esc(o[0])}</span>`;
+    lab.querySelector("input").addEventListener("change",e=>{
+      state.answers[state.idx+1]=e.target.value;
+      box.querySelectorAll(".option").forEach(x=>x.classList.remove("selected"));
+      lab.classList.add("selected");
+    });
+    box.appendChild(lab);
+  });
+  document.getElementById("prevBtn").onclick=()=>{if(state.idx>0){state.idx--;renderQuestion()}};
+  document.getElementById("nextBtn").onclick=()=>{if(n===total)finish();else{state.idx++;renderQuestion()}};
+  const elapsed=Math.floor((Date.now()-state.start)/1000);
+  const limit=state.module==="Hören"?40*60:65*60;
+  document.getElementById("timer").textContent=fmt(Math.max(0,limit-elapsed));
+}
+
+function finish(){
+  if(!state.items.length)return;
+  stopTimer();
+  let score=0,details=[];
+  state.items.forEach((it,i)=>{
+    const key=state.module==="Hören"?it[4]:it.q[2];
+    const question=state.module==="Hören"?it[2]:it.q[0];
+    const ans=state.answers[i+1]||null;
+    if(ans===key)score++;
+    details.push({n:i+1,q:question,ans,key});
+  });
+  const rec={module:state.module,score,total:state.items.length,date:Date.now(),details,mode:state.mode,part:state.part};
+  const h=getHistory();h.unshift(rec);save("b1_history",h.slice(0,50));showAnalysis(rec);
+}
+
+function partSizes(module){
+  return module==="Hören"?[10,5,7,8]:[6,6,7,7,4];
+}
+function showAnalysis(rec){
+  const sizes=partSizes(rec.module),counts=[], labels=[];
+  let pos=0;
+  sizes.forEach((len,i)=>{
+    let s=0;for(let j=0;j<len;j++)if(rec.details[pos+j]&&rec.details[pos+j].ans===rec.details[pos+j].key)s++;
+    counts.push(s);labels.push(`Teil ${i+1}`);pos+=len;
+  });
+  app.innerHTML=top("📊 Ergebnis",rec.module)+`<div class="wrap">
+    <section class="card hero"><div class="resultBig">${rec.score} / ${rec.total}</div><p>${Math.round(rec.score/rec.total*100)}% · ${esc(rec.module)}</p></section>
+    <section class="card"><b>Ergebnis nach Teil</b>${counts.map((s,i)=>`<div class="partrow"><span>${labels[i]}</span><b>${s}/${sizes[i]}</b></div><div class="bar"><i style="width:${s/sizes[i]*100}%"></i></div>`).join("")}</section>
+    <div class="section">Antwortanalyse</div>
+    ${rec.details.map(d=>`<div class="card"><div class="qnum">Aufgabe ${d.n}</div><div style="margin:6px 0 8px;font-weight:700">${esc(d.q)}</div><div class="answerbox">Deine Antwort: <b>${esc(label(d.ans))}</b><br>Richtige Antwort: <b>${esc(label(d.key))}</b><br><span class="${d.ans===d.key?"correct":"wrong"}">${d.ans===d.key?"✓ Richtig":"✕ Falsch"}</span></div></div>`).join("")}
+    <div class="grid"><button class="btn" id="againBtn">🔄 Noch einmal</button><button class="btn secondary" id="resultsAfter">📊 Verlauf</button></div>
+  </div>`;
+  bindTop();
+  document.getElementById("againBtn").onclick=()=>rec.module==="Hören"?startH(rec.part||null):startL(rec.part||null);
+  document.getElementById("resultsAfter").onclick=results;
+}
+
+function results(){
+  stopTimer();
+  const h=getHistory();
+  app.innerHTML=top("📊 Ergebnisse","Gespeicherte Versuche")+`<div class="wrap">
+    ${h.length?h.map(x=>`<div class="hist"><div><b>${esc(x.module)}</b><br><span class="muted">${new Date(x.date).toLocaleString("de-DE")}</span></div><div><b>${x.score}/${x.total}</b><br><span class="tag">${Math.round(x.score/x.total*100)}%</span></div></div>`).join(""):`<div class="card">Noch keine Ergebnisse.</div>`}
+    ${h.length?`<button class="btn danger" id="clearHistory" style="margin-top:4px">Verlauf löschen</button>`:""}
+  </div>`;
+  bindTop();
+  const b=document.getElementById("clearHistory");if(b)b.onclick=()=>{if(confirm("Gesamten Verlauf löschen?")){save("b1_history",[]);results()}};
+}
+
+function training(module){
+  stopTimer();
+  const parts=module==="Hören"?4:5;
+  app.innerHTML=top("🎯 "+module+" Training","Teil auswählen")+`<div class="wrap">
+    ${Array.from({length:parts},(_,i)=>`<button class="btn secondary partBtn" data-part="${i+1}" style="margin-bottom:8px;text-align:left">Teil ${i+1} · Training →</button>`).join("")}
+    <button class="btn gray" id="fullTrain">Kompletter Test</button>
+  </div>`;
+  bindTop();
+  document.querySelectorAll(".partBtn").forEach(b=>b.onclick=()=>module==="Hören"?startH(Number(b.dataset.part)):startL(Number(b.dataset.part)));
+  document.getElementById("fullTrain").onclick=()=>module==="Hören"?startH():startL();
+}
+
+function notes(){
+  stopTimer();
+  const n=load("b1_notes","");
+  app.innerHTML=top("📝 Notizen","Bleiben auf diesem Gerät gespeichert")+`<div class="wrap"><div class="card">
+    <textarea class="textarea" id="notes">${esc(n)}</textarea>
+    <button class="btn" id="saveNotes" style="margin-top:8px">Speichern</button>
+  </div></div>`;
+  bindTop();
+  document.getElementById("saveNotes").onclick=()=>{save("b1_notes",document.getElementById("notes").value);alert("Gespeichert ✓")};
+}
+
+window.addEventListener("error",function(e){
+  console.error(e.error||e.message);
+});
+
+home();
+</script>
+</body>
+</html>
